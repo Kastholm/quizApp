@@ -63,13 +63,6 @@ router.post("/", async (req, res) => {
   res.status(201).send();
 });
 
-// Get the number of quizzes
-/* router.get("/count", async (req, res) => {
-  const quizzes = await loadQuizzesCollection();
-  const count = await quizzes.countDocuments({});
-  res.send({ count });
-}); */
-
 // Update a quiz by ID
 router.put("/:id", async (req, res) => {
   const quizzes = await loadQuizzesCollection();
@@ -89,6 +82,12 @@ router.delete("/:id", async (req, res) => {
   await quizzes.deleteOne({ _id: new mongodb.ObjectId(req.params.id) });
   res.status(200).send();
 });
+
+/* router.get("/count", async (req, res) => {
+  const quizzes = await loadQuizzesCollection();
+  const count = await quizzes.countDocuments({});
+  res.send({ count });
+}); */
 
 /* -------------------------------------------------------------------------- */
 /*                              Export the router                             */

@@ -22,7 +22,6 @@ async function loadUsersCollection() {
   return client.db("Authentication").collection("users");
 }
 
-
 /* -------------------------------------------------------------------------- */
 /*                  Routes for the API calls to the database                  */
 /* -------------------------------------------------------------------------- */
@@ -32,31 +31,32 @@ router.get("/", async (req, res) => {
   res.send(await users.find({}).toArray());
 });
 
-// Add User 
+// Add User
 router.post("/", async (req, res) => {
   // post request to add a post
   // load the users collection
-  const users = await loadUsersCollection(); 
+  const users = await loadUsersCollection();
   await users.insertOne({
     // insert a new post into the collection
-    email: req.body.email, 
+    email: req.body.email,
     name: req.body.name,
     password: req.body.password,
+    score: 0,
     createdAt: new Date(),
   });
   // send a 201 status code to the client
-  res.status(201).send(); 
+  res.status(201).send();
 });
 
-// Delete User 
+// Delete User
 router.delete("/:id", async (req, res) => {
   // :id is a parameter
   // load the users collection
-  const users = await loadUsersCollection(); 
+  const users = await loadUsersCollection();
   // delete the post with the id that matches the id in the url
-  await users.deleteOne({ _id: new mongodb.ObjectId(req.params.id) }); 
+  await users.deleteOne({ _id: new mongodb.ObjectId(req.params.id) });
   // send a 200 status code to the client
-  res.status(200).send(); 
+  res.status(200).send();
 });
 
 // Change Password
@@ -82,6 +82,22 @@ router.post("/:id/changePassword", async (req, res) => {
   );
   // return 200 status code
   res.status(200).send();
+});
+
+// Update Score
+router.patch("/:id/score", async (req, res) => {
+  const users = await loadUsersCollection();
+  const userId = req.params.id;
+  try {
+    const result = await users.findOneAndUpdate(
+      { _id: mongodb.ObjectId(userId) },
+      { $inc: { score: 1 } },
+      { returnOriginal: false }
+    );
+    res.status(200).send(result);
+  } catch (error) {
+    res.status(500).send(error);
+  }
 });
 
 /* -------------------------------------------------------------------------- */

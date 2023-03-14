@@ -2,7 +2,7 @@
   <div>
     <Nav />
     <section class="makeQuiz">
-      <h1>Quiz</h1>
+      <h1>Quiz {{ quizCount + 1 }}</h1>
       <form @submit.prevent="submitForm">
         <label for="question">Question:</label>
         <input type="text" id="question" v-model="question" required />
@@ -50,6 +50,7 @@ export default {
       correctAnswer: "",
       answers: ["answer1", "answer2", "answer3", "answer4"],
       message: "",
+      quizCount: null,
     };
   },
   methods: {
@@ -68,6 +69,7 @@ export default {
         this.answer3 = "";
         this.answer4 = "";
         this.correctAnswer = "";
+        this.quizCount++;
         this.message = "Quiz added successfully!";
       } catch (error) {
         console.error(error);

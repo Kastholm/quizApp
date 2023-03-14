@@ -1,21 +1,24 @@
 <template>
   <div class="quiz-card">
-    <h2>{{ quiz.question }}</h2>
-    <div v-for="(answer, index) in quiz.answers" :key="index">
-      <input
-        type="radio"
-        :id="'answer' + index"
-        :value="answer"
-        v-model="selectedAnswer"
-      />
-      <label :for="'answer' + index">{{ answer }}</label>
-    </div>
-    <button @click="submitAnswer">Submit</button>
-    <p v-if="message">{{ message }}</p>
+    <article>
+      <h2>{{ quiz.question }}</h2>
+      <div v-for="(answer, index) in quiz.answers" :key="index">
+        <input
+          type="radio"
+          :id="'answer' + index"
+          :value="answer"
+          v-model="selectedAnswer"
+        />
+        <label :for="'answer' + index">{{ answer }}</label>
+      </div>
+      <button @click="submitAnswer">Submit</button>
+      <p class="answer" v-if="message">{{ message }}</p>
+    </article>
   </div>
 </template>
 
 <script>
+import userService from "../composables/signUp.js";
 export default {
   // props are used to pass data from the parent component to the child component
   props: {
@@ -31,16 +34,28 @@ export default {
       message: "",
     };
   },
+    created() {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      this.userName = user.name;
+      this.Score = user.score;
+    } else {
+      this.$router.push("/");
+    }
+  },
   /* -------------------------------------------------------------------------- */
   /*                                   Methods                                  */
   /* -------------------------------------------------------------------------- */
   methods: {
-    // submitAnswer method that checks if the selected answer is the same as the correct answer
     submitAnswer() {
       if (this.selectedAnswer === this.quiz.correctAnswer) {
         this.message = "Correct answer!";
+        this.$el.querySelector("article").classList.remove("incorrect");
+        this.$el.querySelector("article").classList.add("correct");
       } else {
         this.message = "Incorrect answer. Please try again.";
+        this.$el.querySelector("article").classList.remove("correct");
+        this.$el.querySelector("article").classList.add("incorrect");
       }
     },
   },
@@ -49,8 +64,18 @@ export default {
 
 <style scoped>
 .quiz-card {
-  border: 1px solid black;
-  padding: 1rem;
+  font-size: 1.4rem;
+  line-height: 2.5em;
   margin-bottom: 1rem;
+  border-radius: 10px;
+}
+.quiz-card button {
+  margin-top: 2rem;
+}
+.correct {
+  background: rgba(0, 128, 0, 0.316);
+}
+.incorrect {
+  background: rgba(255, 0, 0, 0.276);
 }
 </style>

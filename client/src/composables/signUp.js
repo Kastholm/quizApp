@@ -44,6 +44,11 @@ class userService {
   static deletePost(id) {
     return axios.delete(`${url}/${id}`);
   }
+
+  // Update Score
+  static updateScore(id) {
+    return axios.patch(`${url}/${id}/score`);
+  }
 }
 /* -------------------------------------------------------------------------- */
 /*            Exporting the class so it can be used in other files            */

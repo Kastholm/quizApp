@@ -33,7 +33,7 @@ class quizService {
   static insertQuiz(name, question, answers, correctAnswerIndex) {
     const correctAnswer = answers[correctAnswerIndex];
     return axios.post(url, {
-      name: `Quiz`,
+      name: `Quiz ${this.quizCount + 1}`,
       question: question,
       answers: answers,
       correctAnswer: correctAnswer,

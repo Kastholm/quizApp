@@ -1,32 +1,43 @@
 <template>
   <div>
     <Nav />
-    <section class="container">
-      <h1>Hej {{ userName }}</h1>
-      <h2>Her kan dine indstillinger omkring din konto ses</h2>
-      <h2>Se dine stats</h2>
-      <form @submit.prevent="changePassword">
-        <h2>Skift kodeord</h2>
-        <label for="current-password">Nuværende kodeord:</label>
-        <input
-          type="password"
-          id="current-password"
-          v-model="currentPassword"
-          required
-        />
+    <section class="container settings">
+      <article>
+        <h1>Hej {{ userName }}</h1>
+        <h2>Her kan dine indstillinger omkring din konto ses</h2>
+      </article>
+      <article>
+        <h2>Se dine stats:</h2>
+        <h3>
+          Du har pt. <b>{{ Score }}</b> points
+        </h3>
+      </article>
+      <article>
+        <form @submit.prevent="changePassword">
+          <h2>Skift kodeord</h2>
+          <label for="current-password">Nuværende kodeord:</label>
+          <input
+            type="password"
+            id="current-password"
+            v-model="currentPassword"
+            required
+          />
 
-        <label for="new-password">Nyt kodeord:</label>
-        <input
-          type="password"
-          id="new-password"
-          v-model="newPassword"
-          required
-        />
+          <label for="new-password">Nyt kodeord:</label>
+          <input
+            type="password"
+            id="new-password"
+            v-model="newPassword"
+            required
+          />
 
-        <button type="submit">Gem</button>
-      </form>
-      <h2>Ønsker du at slette din bruger?</h2>
-      <button @click="deleteAccount">Slet burger</button>
+          <button type="submit">Gem</button>
+        </form>
+      </article>
+      <article>
+        <h2>Ønsker du at slette din bruger?</h2>
+        <button class="red" @click="deleteAccount">Slet burger</button>
+      </article>
     </section>
   </div>
 </template>
@@ -54,6 +65,7 @@ export default {
     const user = JSON.parse(localStorage.getItem("user"));
     if (user) {
       this.userName = user.name;
+      this.Score = user.score;
     } else {
       this.$router.push("/");
     }
@@ -101,4 +113,9 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.settings article {
+  margin: 0.5em;
+  line-height: 1.2rem;
+}
+</style>

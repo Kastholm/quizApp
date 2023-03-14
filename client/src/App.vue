@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import signin from './components/Forms/signin.vue'
+import { RouterLink, RouterView } from "vue-router";
+import signin from "./components/Forms/signin.vue";
 </script>
 
 <template>
@@ -15,4 +15,12 @@ import signin from './components/Forms/signin.vue'
   place-content: center;
   min-height: 100vh;
 } */
+b {
+  font-size: 2rem;
+  color: green;
+}
+.red {
+  background-color: rgba(255, 0, 0, 0.29);
+  border: none;
+}
 </style>
