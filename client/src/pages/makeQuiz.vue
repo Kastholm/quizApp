@@ -34,7 +34,7 @@
 
 <script>
 import Nav from "../components/nav.vue";
-import quizService from "../composables/quizzes.js";
+import quizService from "../composables/quizComposable.js";
 
 export default {
   components: {

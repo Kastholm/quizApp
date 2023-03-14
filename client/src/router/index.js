@@ -5,6 +5,7 @@ import Welcome from "@/pages/welcome.vue";
 import Settings from "@/pages/settings.vue";
 import playQuiz from "@/pages/playQuiz.vue";
 import makeQuiz from "@/pages/makeQuiz.vue";
+import History from "@/pages/history.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -44,6 +45,12 @@ const router = createRouter({
       path: "/makequiz",
       name: "makeQuiz",
       component: makeQuiz,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/history",
+      name: "History",
+      component: History,
       meta: { requiresAuth: true },
     },
   ],

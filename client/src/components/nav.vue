@@ -28,7 +28,7 @@ export default {
 </script>
 
 <style>
-nav ul {
-  padding: 0 4em;
+nav {
+  padding: 0 2em;
 }
 </style>

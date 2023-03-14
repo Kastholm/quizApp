@@ -11,9 +11,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 // run express
 const app = express();
-// Loading passport for authentication and authorization of users
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
+
 /* -------------------------------------------------------------------------- */
 /*                 Running middleware for body parser and cors                */
 /* -------------------------------------------------------------------------- */
@@ -29,30 +27,6 @@ app.use(
     methods: "GET, POST, PUT, PATCH, DELETE",
   })
 );
-/* -------------------------------------------------------------------------- */
-/*               Configure passport.js to use the local strategy              */
-/* -------------------------------------------------------------------------- */
-passport.use(new LocalStrategy({
-  usernameField: 'email', // the field that holds the email address in the request body
-  passwordField: 'password' // the field that holds the password in the request body
-}, async (email, password, done) => {
-  try {
-    const users = await loadUsersCollection();
-    const user = await users.findOne({ email: email });
-
-    if (!user) {
-      return done(null, false, { message: 'Incorrect email or password.' });
-    }
-
-    if (user.password !== password) {
-      return done(null, false, { message: 'Incorrect email or password.' });
-    }
-
-    return done(null, user);
-  } catch (err) {
-    return done(err);
-  }
-}));
 
 /* -------------------------------------------------------------------------- */
 /*                   Routes for the API calls to the server                   */

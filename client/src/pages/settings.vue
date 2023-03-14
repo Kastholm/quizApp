@@ -44,7 +44,7 @@
 
 <script>
 import Nav from "../components/nav.vue";
-import userService from "../composables/signUp.js";
+import userService from "../composables/usersComposable.js";
 import axios from "axios";
 
 export default {

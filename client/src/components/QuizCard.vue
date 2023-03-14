@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import userService from "../composables/signUp.js";
+import userService from "../composables/usersComposable.js";
 export default {
   // props are used to pass data from the parent component to the child component
   props: {
@@ -34,7 +34,7 @@ export default {
       message: "",
     };
   },
-    created() {
+  created() {
     const user = JSON.parse(localStorage.getItem("user"));
     if (user) {
       this.userName = user.name;
@@ -52,6 +52,15 @@ export default {
         this.message = "Correct answer!";
         this.$el.querySelector("article").classList.remove("incorrect");
         this.$el.querySelector("article").classList.add("correct");
+        try {
+          const userId = JSON.parse(localStorage.getItem("user"))._id;
+          userService.updateScore(userId);
+          const user = JSON.parse(localStorage.getItem("user"));
+          user.score++;
+          localStorage.setItem("user", JSON.stringify(user));
+        } catch (error) {
+          console.error(error);
+        }
       } else {
         this.message = "Incorrect answer. Please try again.";
         this.$el.querySelector("article").classList.remove("correct");

@@ -11,6 +11,8 @@
     "mongodb": "^5.1.0",
     "nodemon": "^2.0.21",
     "passport": "^0.6.0",
+    "passport-google-oauth": "^2.0.0",
+    "passport-http-bearer": "^1.0.1",
     "passport-local": "^1.0.0"
   }
 }

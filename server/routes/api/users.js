@@ -83,18 +83,19 @@ router.post("/:id/changePassword", async (req, res) => {
   // return 200 status code
   res.status(200).send();
 });
-
-// Update Score
 router.patch("/:id/score", async (req, res) => {
-  const users = await loadUsersCollection();
-  const userId = req.params.id;
   try {
-    const result = await users.findOneAndUpdate(
-      { _id: mongodb.ObjectId(userId) },
+    const users = await loadUsersCollection();
+    const user = await users.findOneAndUpdate(
+      { _id: new mongodb.ObjectId(req.params.id) },
       { $inc: { score: 1 } },
       { returnOriginal: false }
     );
-    res.status(200).send(result);
+    if (user.value) {
+      res.status(200).send(user.value);
+    } else {
+      res.status(404).send("User not found");
+    }
   } catch (error) {
     res.status(500).send(error);
   }

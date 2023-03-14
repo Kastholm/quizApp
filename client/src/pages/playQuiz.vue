@@ -22,7 +22,7 @@
 <script>
 import Nav from "../components/nav.vue";
 import QuizCard from "../components/QuizCard.vue";
-import quizService from "../composables/quizzes.js";
+import quizService from "../composables/quizComposable.js";
 
 export default {
   components: {

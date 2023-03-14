@@ -38,7 +38,7 @@
 
 <script>
 // importing the composable function from the composable folder in the src folder
-import userService from "../../composables/signUp.js";
+import userService from "../../composables/usersComposable.js";
 
 export default {
   data() {
