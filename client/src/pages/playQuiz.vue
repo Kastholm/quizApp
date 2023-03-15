@@ -3,11 +3,14 @@
     <main class="container">
       <article>
         <h1>Velkommen til quizGame {{ userName }}</h1>
-        <h2>
-          Her kan du spille quizzes du ikke endnu har fuldført
-        </h2>
-        <h3>Allerede fuldførte quizzes, er ikke synlige her.<br> Men kan se på din historik side:</h3>
-        <router-link to="/history"><button>Se din historik</button></router-link>
+        <h2>Her kan du spille quizzes du ikke endnu har fuldført</h2>
+        <h3>
+          Allerede fuldførte quizzes, er ikke synlige her.<br />
+          Men kan se på din historik side:
+        </h3>
+        <router-link to="/history"
+          ><button>Se din historik</button></router-link
+        >
         <p>Antall quizer: {{ quizCount }}</p>
         <h3 for="">Ønsker du at lave en ny quiz?</h3>
         <router-link to="/makeQuiz"><button>Lav en quiz</button></router-link>
@@ -27,6 +30,8 @@
           :key="quiz._id"
           :quiz="quiz"
           @quiz-completed="removeCompletedQuiz"
+          :userId="user._id"
+          :category="quiz.category"
         />
       </div>
       <div v-else>
@@ -97,14 +102,14 @@ export default {
         console.error(error);
       });
   },
-    methods: {
+  methods: {
     removeCompletedQuiz(quizId) {
-      this.quizzes = this.quizzes.filter((quiz) => quiz._id !== quizId);
+      setTimeout(() => {
+        this.quizzes = this.quizzes.filter((quiz) => quiz._id !== quizId);
+      }, 2000);
     },
   },
 };
 </script>
 
-<style>
-
-</style>
+<style></style>

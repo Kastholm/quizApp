@@ -55,7 +55,6 @@ class quizService {
   static deleteQuiz(id) {
     return axios.delete(`${url}/${id}`);
   }
-
 }
 /* -------------------------------------------------------------------------- */
 /*            Exporting the class so it can be used in other files            */

@@ -2,9 +2,7 @@
   <main class="container">
     <div>
       <article>
-        <h1>
-          Hej {{ userName }}<br />
-        </h1>
+        <h1>Hej {{ userName }}<br /></h1>
         <h2>Her kan du se din historik over alle quizzes du har deltaget i</h2>
         <label for="">Vælg kategori</label>
         <select v-model="selectedCategory">
@@ -25,9 +23,45 @@
           }}</b>
           quizzes du ikke har fuldført endnu i valgte kategori
         </h3>
-        <h3>
-          Du har pt. <b>{{ Score }}</b> points
-        </h3>
+        <h2>Her ses hvor mange procent i kategorier du havde rigtigt</h2>
+        <div
+          class="cardContainer statContainer"
+          v-for="(score, category) in displayedCategoryScores"
+          :key="category"
+        >
+          <h3>{{ category }}</h3>
+          <span>
+            <p>
+              Correct answers: <b>{{ score }}</b>
+            </p>
+            <p >
+              Percentage:<b>
+                {{
+                  (
+                    (categoryScores[selectedCategory] /
+                      totalQuizzesInSelectedCategory) *
+                    100
+                  ).toFixed(2)
+                }}%</b
+              >
+            </p>
+          </span>
+        </div>
+
+        <!--    <div v-if="selectedCategory && categoryScores[selectedCategory]">
+          <h3>{{ selectedCategory }}</h3>
+          <p>Correct answers: {{ categoryScores[selectedCategory] }}</p>
+          <p>
+            Percentage:
+            {{
+              (
+                (categoryScores[selectedCategory] /
+                  totalQuizzesInSelectedCategory) *
+                100
+              ).toFixed(2)
+            }}%
+          </p>
+        </div> -->
       </article>
 
       <h1>Completed Quizzes</h1>
@@ -77,15 +111,6 @@ export default {
     const allQuizzes = ref([]);
     const selectedCategory = ref("");
 
-    const getAllQuizzes = async () => {
-      try {
-        const fetchedQuizzes = await quizService.getQuizzes();
-        allQuizzes.value = fetchedQuizzes;
-      } catch (error) {
-        console.error("Error fetching quizzes:", error);
-      }
-    };
-
     const completedQuizzes = computed(() => {
       if (user.value && user.value.completedQuizzes) {
         return allQuizzes.value.filter((quiz) =>
@@ -103,6 +128,15 @@ export default {
       }
       return allQuizzes.value;
     });
+
+    const getAllQuizzes = async () => {
+      try {
+        const fetchedQuizzes = await quizService.getQuizzes();
+        allQuizzes.value = fetchedQuizzes;
+      } catch (error) {
+        console.error("Error fetching quizzes:", error);
+      }
+    };
 
     const filterQuizzesByCategory = (quizzes) => {
       if (selectedCategory.value === "") {
@@ -122,28 +156,51 @@ export default {
       return filterQuizzesByCategory(notCompletedQuizzes.value);
     });
 
+    const displayedCategoryScores = computed(() => {
+      if (selectedCategory.value === "") {
+        return user.value.categoryScores;
+      } else {
+        const filteredCategoryScores = {};
+        filteredCategoryScores[selectedCategory.value] =
+          user.value.categoryScores[selectedCategory.value];
+        return filteredCategoryScores;
+      }
+    });
+
+    const totalQuizzesInSelectedCategory = computed(() => {
+      if (selectedCategory.value === "") {
+        return 0;
+      } else {
+        return allQuizzes.value.filter(
+          (quiz) => quiz.category === selectedCategory.value
+        ).length;
+      }
+    });
+
     watch(
       () => JSON.parse(localStorage.getItem("user")),
       (newValue) => {
         user.value = newValue;
       }
     );
-
     getAllQuizzes();
-
     return {
       user,
       selectedCategory,
       filteredCompletedQuizzes,
       filteredNotCompletedQuizzes,
       categories,
+      displayedCategoryScores,
+      totalQuizzesInSelectedCategory,
     };
   },
+  //setup end
   created() {
     const user = JSON.parse(localStorage.getItem("user"));
     if (user) {
       this.userName = user.name;
-      this.Score = user.score;
+      this.categoryScores = user.categoryScores;
+      this.completedQuizzes = user.completedQuizzes;
     } else {
       this.$router.push("/");
     }
@@ -151,4 +208,13 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.statContainer {
+  background: rgb(22, 24, 22);
+  padding: 1em;
+  margin-bottom: 0.3em;
+}
+.statContainer * {
+  margin-bottom: 0;
+}
+</style>

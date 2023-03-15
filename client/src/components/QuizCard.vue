@@ -10,7 +10,9 @@
             :value="answer"
             v-model="selectedAnswer"
           />
-          <label :for="'answer' + index">{{ answer }}</label>
+          <label :for="'answer' + index" style="pointer-events: none">{{
+            answer
+          }}</label>
         </span>
       </div>
       <button @click="submitAnswer">Submit</button>
@@ -28,12 +30,15 @@ export default {
       type: Object,
       required: true,
     },
+    userId: String,
+    category: String,
   },
   // data is used to store data that is specific to the component
   data() {
     return {
       selectedAnswer: "",
       message: "",
+      fadeOut: false,
     };
   },
   created() {
@@ -51,6 +56,8 @@ export default {
   methods: {
     submitAnswer() {
       if (this.selectedAnswer === this.quiz.correctAnswer) {
+        userService.updateScore(this.userId);
+        /* userService.updateCategoryScore(this.userId, this.category); */
         // Removes the quiz from playQuiz.vue if the use completes it
         this.fadeOut = true;
         this.$emit("quiz-completed", this.quiz._id);
@@ -62,12 +69,20 @@ export default {
           userService.updateScore(userId);
           userService.addCompletedQuiz(userId, this.quiz._id); // Add this line to update the user's completed quizzes on the server.
           const user = JSON.parse(localStorage.getItem("user"));
-          user.score++;
           // Add the following lines to update the user's completed quizzes in localStorage.
           if (!user.completedQuizzes) {
             user.completedQuizzes = [];
           }
           user.completedQuizzes.push(this.quiz._id);
+          // Update categoryScores in localStorage
+          if (!user.categoryScores) {
+            user.categoryScores = {};
+          }
+          if (!user.categoryScores[this.category]) {
+            user.categoryScores[this.category] = 1;
+          } else {
+            user.categoryScores[this.category]++;
+          }
           localStorage.setItem("user", JSON.stringify(user));
         } catch (error) {
           console.error(error);
@@ -85,7 +100,8 @@ export default {
 <style scoped>
 .fade-out {
   opacity: 0;
-  transition: opacity 1s ease;
+  transform: scale(1);
+  transition: opacity 2s ease;
 }
 .quiz-card {
   font-size: 1rem;
@@ -115,8 +131,21 @@ export default {
 }
 .correct {
   background: rgba(0, 128, 0, 0.316);
+  animation: pop 0.2s ease-out;
 }
 .incorrect {
   background: rgba(255, 0, 0, 0.276);
+  animation: pop 0.2s ease-out;
+}
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 </style>

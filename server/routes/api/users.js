@@ -41,7 +41,14 @@ router.post("/", async (req, res) => {
     email: req.body.email,
     name: req.body.name,
     password: req.body.password,
-    score: 0,
+    categoryScores: {
+      History: 0,
+      Science: 0,
+      Programming: 0,
+      Sports: 0,
+      Gaming: 0,
+    },
+    completedQuizzes: [],
     createdAt: new Date(),
   });
   // send a 201 status code to the client
@@ -86,9 +93,12 @@ router.post("/:id/changePassword", async (req, res) => {
 router.patch("/:id/score", async (req, res) => {
   try {
     const users = await loadUsersCollection();
+    const category = req.body.category;
+    const increment = {};
+    increment[`categoryScores.${category}`] = 1;
     const user = await users.findOneAndUpdate(
       { _id: new mongodb.ObjectId(req.params.id) },
-      { $inc: { score: 1 } },
+      { $inc: increment },
       { returnOriginal: false }
     );
     if (user.value) {
@@ -111,17 +121,6 @@ router.patch("/:id/completedQuizzes", async (req, res) => {
   );
   res.status(200).send();
 });
-
-/* router.post("/:id/quiz/:quizId", async (req, res) => {
-  const users = await loadUsersCollection();
-  const { id, quizId } = req.params;
-  const user = await users.findOneAndUpdate(
-    { _id: mongodb.ObjectId(id) },
-    { $push: { quizzesAnswered: mongodb.ObjectId(quizId) } },
-    { returnOriginal: false }
-  );
-  res.send(user);
-}); */
 
 /* -------------------------------------------------------------------------- */
 /*                              Export the router                             */
