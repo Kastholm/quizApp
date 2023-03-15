@@ -2,16 +2,6 @@
   <div>
     <section class="container settings">
       <article>
-        <h1>Hej {{ userName }}</h1>
-        <h2>Her kan dine indstillinger omkring din konto ses</h2>
-      </article>
-      <article>
-        <h2>Se dine stats:</h2>
-        <h3>
-          Du har pt. <b>{{ Score }}</b> points
-        </h3>
-      </article>
-      <article>
         <form @submit.prevent="changePassword">
           <h2>Skift kodeord</h2>
           <label for="current-password">Nuværende kodeord:</label>

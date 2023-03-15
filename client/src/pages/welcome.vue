@@ -4,13 +4,18 @@
       <article>
           <span>
             <h1>Velkommen {{ userName }}</h1>
-            <h3>Du har pt. <b>{{Score}}</b> points</h3>
           </span>
           <span>
             <h2>Ønsker du at spille eller lave en ny quiz?</h2>
             <span>
               <router-link to="/makeQuiz"><button>Lav en quiz</button></router-link>
               <router-link to="/playQuiz"><button>Tag en quiz</button></router-link>
+            </span>
+          </span>
+          <span>
+            <h2>Du kan også tilse din spillehistorik her:</h2>
+            <span>
+              <router-link to="/history"><button>Historik</button></router-link>
             </span>
           </span>
       </article>

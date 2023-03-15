@@ -34,33 +34,53 @@
             <p>
               Correct answers: <b>{{ score }}</b>
             </p>
-            <p >
-              Percentage:<b>
+            <p>
+              Percentage:
+              <b>
                 {{
-                  (
-                    (categoryScores[selectedCategory] /
-                      totalQuizzesInSelectedCategory) *
-                    100
-                  ).toFixed(2)
-                }}%</b
-              >
+                  completedQuizzesByCategory(category).length > 0
+                    ? (
+                        (score / totalQuizzesInCategory(category)) *
+                        100
+                      ).toFixed(2)
+                    : 0
+                }}%
+              </b>
             </p>
           </span>
         </div>
-
-        <!--    <div v-if="selectedCategory && categoryScores[selectedCategory]">
-          <h3>{{ selectedCategory }}</h3>
-          <p>Correct answers: {{ categoryScores[selectedCategory] }}</p>
-          <p>
-            Percentage:
-            {{
-              (
-                (categoryScores[selectedCategory] /
-                  totalQuizzesInSelectedCategory) *
-                100
-              ).toFixed(2)
-            }}%
-          </p>
+        <!--  <div
+          class="cardContainer statContainer"
+          v-for="(score, category) in displayedCategoryScores"
+          :key="category"
+        >
+          <h3>{{ category }}</h3>
+          <span>
+            <p>
+              Correct answers: <b>{{ score }}</b>
+            </p>
+            <p>
+              Percentage:
+              <b>
+                {{
+                  completedQuizzesByCategory(category).length > 0
+                    ? (
+                        (score / completedQuizzesByCategory(category).length) *
+                        100
+                      ).toFixed(2)
+                    : 0
+                }}%
+              </b>
+            </p>
+            <pre>
+  Debug:
+  Score: {{ score }}
+  Completed Quizzes in Category: {{
+                completedQuizzesByCategory(category).length
+              }}
+</pre
+            >
+          </span>
         </div> -->
       </article>
 
@@ -177,6 +197,48 @@ export default {
       }
     });
 
+    const totalScore = computed(() => {
+      let scoreSum = 0;
+      for (const category in categoryScores.value) {
+        scoreSum += categoryScores.value[category];
+      }
+      return scoreSum;
+    });
+
+    const totalQuizzesCompleted = computed(() => {
+      let quizCount = 0;
+      for (const category in completedQuizzes.value) {
+        quizCount += completedQuizzes.value[category].length;
+      }
+      return quizCount;
+    });
+
+    const overallPercentage = computed(() => {
+      if (totalQuizzesCompleted.value > 0) {
+        return ((totalScore.value / totalQuizzesCompleted.value) * 100).toFixed(
+          2
+        );
+      } else {
+        return 0;
+      }
+    });
+
+    const completedQuizzesByCategory = (category) => {
+      if (user.value && user.value.completedQuizzes) {
+        return allQuizzes.value.filter(
+          (quiz) =>
+            quiz.category === category &&
+            user.value.completedQuizzes.includes(quiz._id)
+        );
+      }
+      return [];
+    };
+
+    const totalQuizzesInCategory = (category) => {
+      return allQuizzes.value.filter((quiz) => quiz.category === category)
+        .length;
+    };
+
     watch(
       () => JSON.parse(localStorage.getItem("user")),
       (newValue) => {
@@ -192,6 +254,11 @@ export default {
       categories,
       displayedCategoryScores,
       totalQuizzesInSelectedCategory,
+      overallPercentage,
+      completedQuizzes,
+      totalQuizzesCompleted,
+      completedQuizzesByCategory,
+      totalQuizzesInCategory,
     };
   },
   //setup end
