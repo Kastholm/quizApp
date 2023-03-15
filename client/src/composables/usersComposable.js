@@ -65,6 +65,14 @@ class userService {
       quizId: quizId,
     });
   }
+  // Sign in user
+  static async signInUser(email, password) {
+    /* console.log("signInUser called with email:", email, "password:", password); */
+    const response = await axios.post(url + "/login", { email, password });
+    /* console.log("signInUser response:", response); */
+    return response;
+  }
+  //
 }
 /* -------------------------------------------------------------------------- */
 /*            Exporting the class so it can be used in other files            */

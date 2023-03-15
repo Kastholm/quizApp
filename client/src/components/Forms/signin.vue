@@ -50,8 +50,8 @@ export default {
   },
   // This is a lifecycle hook that is called when the component is created
   created() {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user) {
+    const token = localStorage.getItem("token");
+    if (token) {
       this.$router.push({
         path: "/welcome",
       });
@@ -61,28 +61,23 @@ export default {
   /*                                   Methods                                  */
   /* -------------------------------------------------------------------------- */
   methods: {
-    // signIn method that calls the getUsers function from the composable function
     signIn() {
       userService
-        // getUsers function returns a promise
-        .getUsers()
-        // then method is called when the promise is resolved
-        .then((users) => {
-          const user = users.find(
-            (u) => u.email === this.email && u.password === this.password
-          );
-          // if user is found, store the user in local storage and redirect to welcome page
-          if (user) {
-            localStorage.setItem("user", JSON.stringify(user));
-            this.$router.push({
-              path: "/welcome",
-            });
-            // if user is not found, show an alert
+        .signInUser(this.email, this.password)
+        .then((response) => {
+          if (response.data.token) {
+            localStorage.setItem("token", response.data.token);
+
+            // Navigate to the welcome page
+            if (this.$route.path !== "/welcome") {
+              this.$router.push({
+                path: "/welcome",
+              });
+            }
           } else {
             alert("Incorrect email or password");
           }
         })
-        // catch method is called when the promise is rejected
         .catch((error) => {
           console.error(error);
         });

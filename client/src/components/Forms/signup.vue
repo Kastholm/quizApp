@@ -78,6 +78,8 @@ export default {
         .insertUser(this.newUserEmail, this.newUserName, this.newUserPassword)
         .then((response) => {
           console.log(response);
+          // Save the token in localStorage
+          localStorage.setItem("token", response.data.token);
           this.newUserEmail = "";
           this.newUserName = "";
           this.newUserPassword = "";

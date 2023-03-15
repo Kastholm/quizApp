@@ -24,7 +24,7 @@ const router = createRouter({
       path: "/welcome",
       name: "welcome",
       component: Welcome,
-      
+
       meta: {
         requiresAuth: true,
       },
@@ -59,8 +59,8 @@ const router = createRouter({
 // Route guard to check if the user is logged in
 router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
-    const user = localStorage.getItem("user");
-    if (!user) {
+    const token = localStorage.getItem("token");
+    if (!token) {
       next("/signup");
     } else {
       next();

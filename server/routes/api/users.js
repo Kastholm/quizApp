@@ -1,6 +1,8 @@
 /* -------------------------------------------------------------------------- */
 /*          Loading all the modules and dependencies for the database         */
 /* -------------------------------------------------------------------------- */
+// Loading jsonwebtoken for authentication
+const jwt = require("jsonwebtoken");
 // Loading dotenv to access environment variables
 require("dotenv").config();
 // Loading express for handling API routes
@@ -36,6 +38,10 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   // Load the users collection
   const users = await loadUsersCollection();
+  const existingUser = await users.findOne({ email: req.body.email });
+  if (existingUser) {
+    return res.status(409).send("User with this email already exists.");
+  }
   // Insert a new user into the collection with provided data
   await users.insertOne({
     email: req.body.email,
@@ -51,8 +57,36 @@ router.post("/", async (req, res) => {
     completedQuizzes: [],
     createdAt: new Date(),
   });
+  const user = await users.findOne({ email: req.body.email });
+  const token = jwt.sign(
+    { _id: user._id, email: user.email, name: user.name },
+    process.env.JWT_SECRET,
+    { expiresIn: "1h" }
+  );
   // Send a 201 status code to the client indicating the user was created successfully
-  res.status(201).send();
+  res.status(201).json({ token });
+});
+
+// User login
+router.post("/login", async (req, res) => {
+  const users = await loadUsersCollection();
+  const user = await users.findOne({ email: req.body.email });
+
+  if (!user) {
+    return res.status(401).send("Invalid email or password.");
+  }
+
+  if (req.body.password !== user.password) {
+    return res.status(401).send("Invalid email or password.");
+  }
+
+  const token = jwt.sign(
+    { _id: user._id, email: user.email, name: user.name },
+    process.env.JWT_SECRET,
+    { expiresIn: "1h" }
+  );
+
+  res.status(200).json({ token });
 });
 
 // Delete User
