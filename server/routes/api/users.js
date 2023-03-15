@@ -1,13 +1,13 @@
 /* -------------------------------------------------------------------------- */
 /*          Loading all the modules and dependencies for the database         */
 /* -------------------------------------------------------------------------- */
-// Loading dotenv
+// Loading dotenv to access environment variables
 require("dotenv").config();
-// Loading express
+// Loading express for handling API routes
 const express = require("express");
-// Loading mongodb
+// Loading mongodb to interact with MongoDB database
 const mongodb = require("mongodb");
-// Loading router
+// Loading router to define and handle routes
 const router = express.Router();
 
 /* -------------------------------------------------------------------------- */
@@ -28,16 +28,16 @@ async function loadUsersCollection() {
 // Get Users (for testing purposes)
 router.get("/", async (req, res) => {
   const users = await loadUsersCollection();
+  // Send the array of users as the response
   res.send(await users.find({}).toArray());
 });
 
 // Add User
 router.post("/", async (req, res) => {
-  // post request to add a post
-  // load the users collection
+  // Load the users collection
   const users = await loadUsersCollection();
+  // Insert a new user into the collection with provided data
   await users.insertOne({
-    // insert a new post into the collection
     email: req.body.email,
     name: req.body.name,
     password: req.body.password,
@@ -51,62 +51,71 @@ router.post("/", async (req, res) => {
     completedQuizzes: [],
     createdAt: new Date(),
   });
-  // send a 201 status code to the client
+  // Send a 201 status code to the client indicating the user was created successfully
   res.status(201).send();
 });
 
 // Delete User
 router.delete("/:id", async (req, res) => {
-  // :id is a parameter
-  // load the users collection
+  // Load the users collection
   const users = await loadUsersCollection();
-  // delete the post with the id that matches the id in the url
+  // Delete the user with the ID that matches the ID in the URL
   await users.deleteOne({ _id: new mongodb.ObjectId(req.params.id) });
-  // send a 200 status code to the client
+  // Send a 200 status code to the client indicating the user was deleted successfully
   res.status(200).send();
 });
 
 // Change Password
 router.post("/:id/changePassword", async (req, res) => {
   const users = await loadUsersCollection();
+  // Find the user by ID
   const user = await users.findOne({
     _id: new mongodb.ObjectId(req.params.id),
   });
-  // if the user is not found, return 404
+  // If the user is not found, return a 404 status code with an error message
   if (!user) {
     res.status(404).send("User not found");
     return;
   }
-  // if the current password is not matching the password in the database, return 401
+  // If the current password doesn't match the password in the database, return a 401 status code with an error message
   if (user.password !== req.body.currentPassword) {
     res.status(401).send("Current password is incorrect");
     return;
   }
-  // if the current password is matching the password in the database, update the password
+  // If the current password matches the password in the database, update the password
   await users.updateOne(
     { _id: new mongodb.ObjectId(req.params.id) },
     { $set: { password: req.body.newPassword } }
   );
-  // return 200 status code
+  // Return a 200 status code to indicate that the password was updated successfully
   res.status(200).send();
 });
+// Update the user's score in a specific category
 router.patch("/:id/score", async (req, res) => {
   try {
     const users = await loadUsersCollection();
+    // Get the category from the request body
     const category = req.body.category;
+    // Prepare an increment object to update the user's score
     const increment = {};
     increment[`categoryScores.${category}`] = 1;
+
+    // Find the user by ID and increment their score in the specified category
     const user = await users.findOneAndUpdate(
       { _id: new mongodb.ObjectId(req.params.id) },
       { $inc: increment },
       { returnOriginal: false }
     );
+
+    // If the user is found and the score is updated, return the updated user data
     if (user.value) {
       res.status(200).send(user.value);
     } else {
+      // If the user is not found, return a 404 status code with an error message
       res.status(404).send("User not found");
     }
   } catch (error) {
+    // If there's an error, return a 500 status code with the error
     res.status(500).send(error);
   }
 });
@@ -114,16 +123,16 @@ router.patch("/:id/score", async (req, res) => {
 // Update completed quizzes
 router.patch("/:id/completedQuizzes", async (req, res) => {
   const users = await loadUsersCollection();
-  // Find the user by ID and update their completed quizzes list
+  // Find the user by ID and update their completed quizzes list by adding the provided quiz ID
   await users.updateOne(
     { _id: new mongodb.ObjectId(req.params.id) },
     { $push: { completedQuizzes: req.body.quizId } }
   );
+  // Send a 200 status code to indicate that the completed quizzes list was updated successfully
   res.status(200).send();
 });
 
 /* -------------------------------------------------------------------------- */
 /*                              Export the router                             */
 /* -------------------------------------------------------------------------- */
-
 module.exports = router;
