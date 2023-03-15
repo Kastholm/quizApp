@@ -1,8 +1,7 @@
 <template>
   <div>
-    <Nav />
     <section class="makeQuiz">
-      <h1>Quiz {{ quizCount + 1 }}</h1>
+      <h1>Quiz</h1>
       <form @submit.prevent="submitForm">
         <label for="question">Question:</label>
         <input type="text" id="question" v-model="question" required />
@@ -25,6 +24,17 @@
             {{ answer }}
           </option>
         </select>
+        <label for="category">Category:</label>
+        <select id="category" v-model="category" required>
+          <option disabled value="">Please select one</option>
+          <option
+            v-for="category in categories"
+            :key="category"
+            :value="category"
+          >
+            {{ category }}
+          </option>
+        </select>
         <button type="submit">Submit</button>
       </form>
       <p v-if="message">{{ message }} , {{ answer }}</p>
@@ -33,15 +43,14 @@
 </template>
 
 <script>
-import Nav from "../components/nav.vue";
+
 import quizService from "../composables/quizComposable.js";
 
 export default {
-  components: {
-    Nav,
-  },
   data() {
     return {
+      category: "",
+      categories: ["History", "Science", "Programming", "Sports", "Gaming"],
       question: "",
       answer1: "",
       answer2: "",
@@ -50,7 +59,7 @@ export default {
       correctAnswer: "",
       answers: ["answer1", "answer2", "answer3", "answer4"],
       message: "",
-      quizCount: null,
+      
     };
   },
   methods: {
@@ -58,18 +67,20 @@ export default {
       const correctAnswerIndex = this.answers.indexOf(this.correctAnswer);
       try {
         await quizService.insertQuiz(
-          `Quiz ${this.quizCount + 1}`,
+          `Quiz`,
+          this.category,
           this.question,
           [this.answer1, this.answer2, this.answer3, this.answer4],
           correctAnswerIndex
         );
+        this.category = "";
         this.question = "";
         this.answer1 = "";
         this.answer2 = "";
         this.answer3 = "";
         this.answer4 = "";
         this.correctAnswer = "";
-        this.quizCount++;
+
         this.message = "Quiz added successfully!";
       } catch (error) {
         console.error(error);

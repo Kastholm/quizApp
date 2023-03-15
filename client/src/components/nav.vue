@@ -6,6 +6,7 @@
     <ul>
       <li><router-link to="/welcome">Hjem</router-link></li>
       <li><router-link to="/playQuiz">Quiz Game</router-link></li>
+      <li><router-link to="/history">Historik</router-link></li>
       <li><router-link to="/settings">Settings</router-link></li>
       <li><button @click="signOut">Sign Out</button></li>
     </ul>

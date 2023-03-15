@@ -1,6 +1,5 @@
 <template>
   <div>
-    <Nav />
     <section class="container settings">
       <article>
         <h1>Hej {{ userName }}</h1>
@@ -43,15 +42,11 @@
 </template>
 
 <script>
-import Nav from "../components/nav.vue";
 import userService from "../composables/usersComposable.js";
 import axios from "axios";
 
 export default {
   name: "Settings",
-  components: {
-    Nav,
-  },
   data() {
     return {
       userEmail: "",

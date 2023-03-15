@@ -4,6 +4,15 @@
 // Connects to the server and sends the data from the form to the server
 import axios from "axios";
 const url = "http://localhost:3000/api/quiz";
+//Checking post count for development purposes
+axios
+  .get("http://localhost:3000/api/quiz/")
+  .then((response) => {
+    console.log(`There are ${response.data.length} quizzes`);
+  })
+  .catch((error) => {
+    console.error(error);
+  });
 
 /* -------------------------------------------------------------------------- */
 /*                        Collecting data from the form                       */
@@ -26,14 +35,16 @@ class quizService {
         // If promise is rejected, return the error
       } catch (err) {
         reject(err);
+        return [];
       }
     });
   }
   // Create Post - this is the function that sends the data to the server
-  static insertQuiz(name, question, answers, correctAnswerIndex) {
+  static insertQuiz(name, category, question, answers, correctAnswerIndex) {
     const correctAnswer = answers[correctAnswerIndex];
     return axios.post(url, {
-      name: `Quiz ${this.quizCount + 1}`,
+      name: `Quiz`,
+      category: category,
       question: question,
       answers: answers,
       correctAnswer: correctAnswer,
@@ -44,6 +55,7 @@ class quizService {
   static deleteQuiz(id) {
     return axios.delete(`${url}/${id}`);
   }
+
 }
 /* -------------------------------------------------------------------------- */
 /*            Exporting the class so it can be used in other files            */

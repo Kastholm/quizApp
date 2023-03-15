@@ -5,6 +5,12 @@
 import axios from "axios";
 const url = "http://localhost:3000/api/users";
 
+async function loadUsersCollection() {
+  const client = await mongodb.MongoClient.connect("mongodb+srv://Kastholm95:Kastholm95@quiz-app-cluster.dum9fex.mongodb.net/test", {
+    useNewUrlParser: true,
+  });
+  return client.db("Quiz").collection("users");
+}
 /* -------------------------------------------------------------------------- */
 /*                        Collecting data from the form                       */
 /* -------------------------------------------------------------------------- */
@@ -49,6 +55,14 @@ class userService {
   static updateScore(id) {
     return axios.patch(`${url}/${id}/score`);
   }
+
+  // Add completed quiz
+static addCompletedQuiz(userId, quizId) {
+  return axios.patch(`${url}/${userId}/completedQuizzes`, {
+    quizId: quizId,
+  });
+}
+
 }
 /* -------------------------------------------------------------------------- */
 /*            Exporting the class so it can be used in other files            */

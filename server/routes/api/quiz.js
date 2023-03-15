@@ -54,6 +54,7 @@ router.post("/", async (req, res) => {
   //Insert the quiz into the database
   await quizzes.insertOne({
     name: req.body.name,
+    category: req.body.category,
     question: req.body.question,
     answers: req.body.answers,
     correctAnswer: req.body.correctAnswer,
@@ -83,11 +84,12 @@ router.delete("/:id", async (req, res) => {
   res.status(200).send();
 });
 
-/* router.get("/count", async (req, res) => {
-  const quizzes = await loadQuizzesCollection();
-  const count = await quizzes.countDocuments({});
-  res.send({ count });
-}); */
+// Get the count of all quizzes
+router.get("/count", async (req, res) => {
+    const quizzes = await loadQuizzesCollection();
+    const count = quizzes.count({});
+    res.json({ count });
+});
 
 /* -------------------------------------------------------------------------- */
 /*                              Export the router                             */

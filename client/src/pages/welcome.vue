@@ -1,5 +1,4 @@
 <template>
-  <Nav />
   <section>
     <main class="container">
       <article>
@@ -20,7 +19,6 @@
 </template>
 
 <script>
-import Nav from "../components/nav.vue";
 export default {
   name: "Welcome",
   props: {
@@ -39,9 +37,6 @@ export default {
     } else {
       this.$router.push("/");
     }
-  },
-  components: {
-    Nav,
   },
 };
 </script>

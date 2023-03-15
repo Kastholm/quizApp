@@ -101,6 +101,28 @@ router.patch("/:id/score", async (req, res) => {
   }
 });
 
+// Update completed quizzes
+router.patch("/:id/completedQuizzes", async (req, res) => {
+  const users = await loadUsersCollection();
+  // Find the user by ID and update their completed quizzes list
+  await users.updateOne(
+    { _id: new mongodb.ObjectId(req.params.id) },
+    { $push: { completedQuizzes: req.body.quizId } }
+  );
+  res.status(200).send();
+});
+
+/* router.post("/:id/quiz/:quizId", async (req, res) => {
+  const users = await loadUsersCollection();
+  const { id, quizId } = req.params;
+  const user = await users.findOneAndUpdate(
+    { _id: mongodb.ObjectId(id) },
+    { $push: { quizzesAnswered: mongodb.ObjectId(quizId) } },
+    { returnOriginal: false }
+  );
+  res.send(user);
+}); */
+
 /* -------------------------------------------------------------------------- */
 /*                              Export the router                             */
 /* -------------------------------------------------------------------------- */
