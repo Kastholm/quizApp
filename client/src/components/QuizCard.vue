@@ -41,6 +41,7 @@ export default {
       fadeOut: false,
     };
   },
+  // Lifecycle hook that is called when the component is created
   created() {
     const user = JSON.parse(localStorage.getItem("user"));
     if (user) {
@@ -54,26 +55,30 @@ export default {
   /*                                   Methods                                  */
   /* -------------------------------------------------------------------------- */
   methods: {
+    // Function to handle answer submission
     submitAnswer() {
       if (this.selectedAnswer === this.quiz.correctAnswer) {
         userService.updateScore(this.userId);
-        /* userService.updateCategoryScore(this.userId, this.category); */
-        // Removes the quiz from playQuiz.vue if the use completes it
+        // Removes the quiz from playQuiz.vue if the user completes it
         this.fadeOut = true;
         this.$emit("quiz-completed", this.quiz._id);
         this.message = "Correct answer!";
         this.$el.querySelector("article").classList.remove("incorrect");
         this.$el.querySelector("article").classList.add("correct");
+
+        // Update user's score and completed quizzes on the server and in localStorage
         try {
           const userId = JSON.parse(localStorage.getItem("user"))._id;
           userService.updateScore(userId);
-          userService.addCompletedQuiz(userId, this.quiz._id); // Add this line to update the user's completed quizzes on the server.
+          userService.addCompletedQuiz(userId, this.quiz._id);
           const user = JSON.parse(localStorage.getItem("user"));
-          // Add the following lines to update the user's completed quizzes in localStorage.
+
+          // Update the user's completed quizzes in localStorage
           if (!user.completedQuizzes) {
             user.completedQuizzes = [];
           }
           user.completedQuizzes.push(this.quiz._id);
+
           // Update categoryScores in localStorage
           if (!user.categoryScores) {
             user.categoryScores = {};

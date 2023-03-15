@@ -1,28 +1,27 @@
 <template>
   <section class="container">
-    <!--     <h1>Current Users</h1>
-    <ul>
-      <li v-for="user in users" :key="user._id">
-        email: {{ user.email }} pass: {{ user.password }}
-      </li>
-    </ul> -->
     <h2>Add User</h2>
     <form @submit.prevent="submitForm">
       <label>
+        <!-- Input field for the user's email -->
         Email:
         <input type="email" v-model="newUserEmail" required />
       </label>
       <label for="name">Name</label>
+      <!-- Input field for the user's name -->
       <input type="text" id="name" v-model="newUserName" required />
       <label>
+        <!-- Input field for the user's password -->
         Password:
         <input type="password" v-model="newUserPassword" required />
       </label>
       <label>
+        <!-- Input field for the user's password confirmation -->
         Confirm Password:
         <input type="password" v-model="newUserPasswordConfirm" required />
       </label>
       <button type="submit">Submit</button>
+      <!-- Display a message if there's one available -->
       <p v-if="message">{{ message }}</p>
       <dialog open v-if="message">
         <article>
